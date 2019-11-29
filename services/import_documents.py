@@ -38,6 +38,7 @@ def import_document(text, tokenizer, union, normalizer=None, stemmer=None, lemma
     document = [word.lower() for word in document]
     print(document)
     #get_stopwords(document)
+    document = [word for word in document if word]
     positional_indexer.add_document(doc_id, document)
     bigram_indexer.add_document(doc_id, document)
     doc_id += 1
