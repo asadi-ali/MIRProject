@@ -24,7 +24,7 @@ def get_idf(term, type):
     else:
         raise NotImplementedError()
 
-def get_related_documents(query, k):
+def get_related_documents(query, k, candidates = None):
     terms = set(query)
     score = defaultdict(int)
     for t in terms:
@@ -33,6 +33,8 @@ def get_related_documents(query, k):
         w_q = tf_q*idf_q
         posting_list = positional_indexer.get_posting_list(t)
         for d, pos in posting_list:
+            if candidates is not None and not d in candidates:
+                continue
             tf_d = get_tf(len(pos), 'l')
             idf_d = get_idf(t, 'n')
             w_d = tf_d*idf_d
@@ -45,6 +47,17 @@ def get_related_documents(query, k):
     counter = counter.most_common(min(len(counter), k))
     bests = [rec[0] for rec in counter]
     return [' '.join(document_base[doc_id-1]) for doc_id in bests]
+
+def intersect(l1, l2):
+    return [x for x in l1 if x in l2]
+
+def get_proximity_related_documents(query, window, k):
+    terms = set(query)
+    candidates = [rec[0] for rec in positional_indexer.get_posting_list(terms[0])]
+    for t in terms:
+        candidates = intersect(candidates, [rec[0] for rec in positional_indexer.get_posting_list(t)])
+    # TODO: filter candidates so that those remain that have all in one window
+    return get_related_documents(query, k, candidates)
 
 @lru_cache()
 def vector_length(doc_id):
