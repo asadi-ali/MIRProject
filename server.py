@@ -1,11 +1,11 @@
-from services.import_documents import import_persian_documents, \
-    import_english_documents
+from services.import_documents import import_documents
 from functions import name_to_function_mapping
 
 
 def initialize():
-    import_english_documents('data/English.csv')
-    import_persian_documents('data/Persian.xml')
+    print("Let's initialize.")
+    import_documents()
+    print("Initialization done.")
 
 
 def serve():
