@@ -13,4 +13,9 @@ def gamma_compress(integers):
 
 
 def gamma_uncompress(string):
-    pass
+    result = []
+    while string.find('0') != -1:
+        length = string.find('0')
+        result.append(int('0b1' + string[length+1:2*length+1], 2))
+        string = string[2*length+1:]
+    return result

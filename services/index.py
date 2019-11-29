@@ -28,10 +28,11 @@ class PositionalIndexer(BaseIndexer):
         pass
 
     def add_document(self, doc_id, words):
-        distinct_words = list(set(words))
-        for word in distinct_words:
-            positions = [i for i, w in enumerate(words) if w == word]
-            self.inverted_index[word].append((doc_id, positions))
+        for i, word in enumerate(words):
+            if (not self.inverted_index[word] or
+                    self.inverted_index[word][-1][0] != doc_id):
+                self.inverted_index[word].append((doc_id, []))
+            self.inverted_index[word][-1][1].append(i)
 
     def delete_document(self, doc_id):
         self.deleted_docs.append(doc_id)
@@ -56,6 +57,8 @@ class BigramIndexer(BaseIndexer):
 
     def add_document(self, doc_id, words):
         for word in words:
+            if not word:
+                continue
             for cc in nltk.ngrams(word, n=2):
                 self.inverted_index[''.join(cc)].add(word)
 
