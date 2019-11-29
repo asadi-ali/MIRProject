@@ -19,7 +19,7 @@ def import_english_documents(file_address):
     stop_words = set(stopwords.words('english'))
     tokenizer = RegexpTokenizer(r'\w+')
     stemmer = PorterStemmer()
-    lemmatizer = nltk.WordNetLemmatizer()
+    # lemmatizer = nltk.WordNetLemmatizer()
     with open(file_address, 'rt') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
         title = True
@@ -31,8 +31,9 @@ def import_english_documents(file_address):
             document = tokenizer.tokenize(text)
             document = [word for word in document if not word in stop_words]
             document = [stemmer.stem(word) for word in document]
-            document = [lemmatizer.lemmatize(word) for word in document]
+            # document = [lemmatizer.lemmatize(word) for word in document]
             document = [word.lower() for word in document]
+            document = [word for word in document if word]
             positional_indexer.add_document(doc_id, document)
             bigram_indexer.add_document(doc_id, document)
             doc_id += 1
@@ -48,13 +49,14 @@ def import_persian_documents(file_address):
     normalizer = hazm.Normalizer()
     tokenizer = hazm.WordTokenizer()
     stemmer = hazm.Stemmer()
-    lemmatizer = hazm.Lemmatizer()
+    # lemmatizer = hazm.Lemmatizer()
     for title, text in zip(titles, texts):
         text = title + ' ' + text
         document = normalizer.normalize(text)
         document = tokenizer.tokenize(document)
         document = [stemmer.stem(word) for word in document]
-        document = [lemmatizer.lemmatize(word) for word in document]
+        # document = [lemmatizer.lemmatize(word) for word in document]
+        document = [word for word in document if word]
         positional_indexer.add_document(doc_id, document)
         bigram_indexer.add_document(doc_id, document)
         doc_id += 1
