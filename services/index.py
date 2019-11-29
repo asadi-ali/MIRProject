@@ -1,5 +1,8 @@
+import os
+from copy import deepcopy
 import nltk
 from collections import defaultdict
+from services import file_manager
 
 
 class BaseIndexer(object):
@@ -20,12 +23,27 @@ class PositionalIndexer(BaseIndexer):
     def __init__(self):
         self.inverted_index = defaultdict(list)
         self.deleted_docs = []
+        self.file_address = 'data/indices/positional.txt'
+
+    def reload(self):
+        self.inverted_index = defaultdict(list)
+        self.deleted_docs = []
 
     def save(self):
-        pass
+        file_manager.save(self.file_address, self.inverted_index)
+        file_manager.save_uncompress('data/indices/uncompress.txt',
+                                     self.inverted_index)
+        file_manager.save_gamma('data/indices/gamma.txt', self.inverted_index)
+        file_manager.save_variable('data/indices/variable.txt',
+                                   self.inverted_index)
 
     def load(self):
-        pass
+        if os.path.exists(self.file_address):
+            self.inverted_index.update(
+                file_manager.load(self.file_address))
+
+            return True
+        return False
 
     def add_document(self, doc_id, words):
         for i, word in enumerate(words):
@@ -48,17 +66,29 @@ class BigramIndexer(BaseIndexer):
     def __init__(self):
         self.inverted_index = defaultdict(set)
         self.deleted_docs = []
+        self.file_address = 'data/indices/bigram.txt'
+
+    def reload(self):
+        self.inverted_index = defaultdict(set)
+        self.deleted_docs = []
 
     def save(self):
-        pass
+        index = deepcopy(dict(self.inverted_index))
+        for k in index.keys():
+            index[k] = list(index[k])
+
+        file_manager.save(self.file_address, index)
 
     def load(self):
-        pass
+        if os.path.exists(self.file_address):
+            index = file_manager.load(self.file_address)
+            for k in index.keys():
+                self.inverted_index[k] = set(index[k])
+            return True
+        return False
 
     def add_document(self, doc_id, words):
         for word in words:
-            if not word:
-                continue
             for cc in nltk.ngrams(word, n=2):
                 self.inverted_index[''.join(cc)].add(word)
 

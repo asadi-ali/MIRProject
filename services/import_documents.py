@@ -36,7 +36,7 @@ def import_document(text, tokenizer, union, normalizer=None, stemmer=None, lemma
     if lemmatizer is not None:
         document = [lemmatizer.lemmatize(word) for word in document]
     document = [word.lower() for word in document]
-    #print(document)
+    print(document)
     #get_stopwords(document)
     positional_indexer.add_document(doc_id, document)
     bigram_indexer.add_document(doc_id, document)
@@ -66,7 +66,6 @@ def import_english_documents(file_address):
         import_document(text, tokenizer, en_tokens, stemmer=stemmer, stopwords=stop_words)
     print("English most common words:")
     print(get_stopwords(en_tokens))
-
 
 def import_persian_documents(file_address):
     global doc_id
