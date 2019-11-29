@@ -22,6 +22,7 @@ fa_lemmatizer = hazm.Lemmatizer()
 
 doc_id = 1
 document_base = []
+raw_document_base = []
 en_common = []
 fa_common = []
 en_tokens = []
@@ -66,9 +67,11 @@ def import_document(document):
     doc_id += 1
 
 def import_english_document(text):
+    raw_document_base.append(text)
     import_document(process_english_document(text, en_tokens))
 
 def import_farsi_document(text):
+    raw_document_base.append(text)
     import_document(process_farsi_document(text, fa_tokens))
 
 def import_english_documents(file_address):

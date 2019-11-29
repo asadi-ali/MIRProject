@@ -1,7 +1,7 @@
 from services.index import positional_indexer
 from collections import Counter, defaultdict
 from math import log, sqrt
-from services.document_manager import document_base
+from services.document_manager import document_base, raw_document_base
 from functools import lru_cache
 
 def get_tf(freq, type):
@@ -47,6 +47,7 @@ def get_related_documents(query, k, candidates = None):
     counter = counter.most_common(min(len(counter), k))
     bests = [rec[0] for rec in counter]
     return [' '.join(document_base[doc_id-1]) for doc_id in bests]
+    #return [''.join(raw_document_base[doc_id-1]) for doc_id in bests]
 
 def intersect(l1, l2):
     return [x for x in l1 if x in l2]
