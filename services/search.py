@@ -53,11 +53,45 @@ def intersect(l1, l2):
 
 def get_proximity_related_documents(query, window, k):
     terms = set(query)
-    candidates = [rec[0] for rec in positional_indexer.get_posting_list(terms[0])]
+    candidates = []
+    first = True
     for t in terms:
+        if first:
+            candidates = [rec[0] for rec in positional_indexer.get_posting_list(t)]
+            first = False
+            continue
         candidates = intersect(candidates, [rec[0] for rec in positional_indexer.get_posting_list(t)])
-    # TODO: filter candidates so that those remain that have all in one window
-    return get_related_documents(query, k, candidates)
+    final_candidates = []
+    for d in candidates:
+        window_start = []
+        for t in terms:
+            appear = []
+            for rec in positional_indexer.get_posting_list(t):
+                if rec[0] == d:
+                    appear = rec[1]
+                    break
+            window_start.extend(appear)
+        final = True
+        for p in window_start:
+            pok = True
+            for t in terms:
+                ok = False
+                for rec in positional_indexer.get_posting_list(t):
+                    if rec[0] == d:
+                        for ap in rec[1]:
+                            if ap >= p and ap < p + window:
+                                ok = True
+                                break
+                        break
+                if not ok:
+                    pok = False
+                    break
+            if pok:
+                final = True
+                break
+        if final:
+            final_candidates.append(d)
+    return get_related_documents(query, k, final_candidates)
 
 @lru_cache()
 def vector_length(doc_id):

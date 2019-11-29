@@ -32,7 +32,7 @@ def search_for_document(*args):
         print(i, '.', document)
 
 def proximity_search(*args):
-    window = args[0]
+    window = int(args[0])
     query = [get_corrected_word(word) for word in args[1:]]
     related_documents = get_proximity_related_documents(query, window, 10)
     print("Proximity Related Documents: ")
@@ -45,5 +45,5 @@ name_to_function_mapping = {
     'get-variable-difference': get_variable_difference,
     'get-gamma-difference': get_gamma_difference,
     'search-for-document': search_for_document,
-    'proximity-search': proximity_search
+    'proximity-search': proximity_search,
 }
