@@ -11,6 +11,7 @@ from services.index import positional_indexer, bigram_indexer
 from collections import Counter
 
 doc_id = 1
+document_base = []
 
 def get_stopwords(document):
     counter = Counter(document)
@@ -36,9 +37,10 @@ def import_document(text, tokenizer, union, normalizer=None, stemmer=None, lemma
     if lemmatizer is not None:
         document = [lemmatizer.lemmatize(word) for word in document]
     document = [word.lower() for word in document]
-    print(document)
+    #print(document)
     #get_stopwords(document)
     document = [word for word in document if word]
+    document_base.append(document)
     positional_indexer.add_document(doc_id, document)
     bigram_indexer.add_document(doc_id, document)
     doc_id += 1

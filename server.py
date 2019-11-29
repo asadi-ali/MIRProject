@@ -1,15 +1,15 @@
-from services.import_documents import import_documents
+from services.document_manager import import_documents
 from services.index import positional_indexer, bigram_indexer
 from functions import name_to_function_mapping
 
 
 def initialize():
-    if not positional_indexer.load() or not bigram_indexer.load():
-        positional_indexer.reload()
-        bigram_indexer.reload()
-        import_documents()
-        positional_indexer.save()
-        bigram_indexer.save()
+    #if not positional_indexer.load() or not bigram_indexer.load():
+    positional_indexer.reload()
+    bigram_indexer.reload()
+    import_documents()
+    positional_indexer.save()
+    bigram_indexer.save()
 
 
 def serve():
