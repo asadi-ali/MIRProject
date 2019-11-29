@@ -10,6 +10,7 @@ def initialize():
     import_documents()
     positional_indexer.save()
     bigram_indexer.save()
+    print("I'm ready!")
 
 
 def serve():

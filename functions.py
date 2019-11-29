@@ -3,7 +3,7 @@ import os
 from services.index import positional_indexer
 from services.spell_correction import get_corrected_word
 from services.search import get_related_documents, get_proximity_related_documents
-from services.document_manager import document_base
+from services.document_manager import process_farsi_document, process_english_document, get_farsi_commons, get_english_commons
 
 def show_posting_list(*args):
     posting_list = positional_indexer.get_posting_list(args[0])
@@ -39,6 +39,19 @@ def proximity_search(*args):
     for i, document in enumerate(related_documents):
         print(i, '.', document)
 
+def print_common_en(*args):
+    print(get_english_commons())
+
+def print_common_fa(*args):
+    print(get_farsi_commons())
+
+def process_text_fa(*args):
+    print(process_farsi_document(' '.join(args)))
+
+def process_text_en(*args):
+    print(process_english_document(' '.join(args)))
+
+
 name_to_function_mapping = {
     'show-posting-list': show_posting_list,
     'correct-query': correct_query,
@@ -46,4 +59,8 @@ name_to_function_mapping = {
     'get-gamma-difference': get_gamma_difference,
     'search-for-document': search_for_document,
     'proximity-search': proximity_search,
+    'print-common-en': print_common_en,
+    'print-common-fa': print_common_fa,
+    'process-text-fa': process_text_fa,
+    'process-text-en': process_text_en,
 }

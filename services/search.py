@@ -15,7 +15,7 @@ def get_tf(freq, type):
         raise NotImplementedError()
 
 def get_idf(term, type):
-    if not positional_indexer.inverted_index:
+    if not positional_indexer.inverted_index[term]:
         return 0
     if type == 'n':
         return 1
