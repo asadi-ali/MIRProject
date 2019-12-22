@@ -18,7 +18,8 @@ def serve():
     try:
         while True:
             method, *args = input().split(' ')
-            name_to_function_mapping[method](*args)
+            if method in name_to_function_mapping:
+                name_to_function_mapping[method](*args)
     except KeyboardInterrupt:
         print("The program is terminated.")
 
