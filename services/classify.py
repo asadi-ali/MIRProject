@@ -29,22 +29,29 @@ def load_labeled_data(path):
     X = []
     y = []
     tags_cnt = max(tags)
+    cnt = 0
     for text, tag in zip(texts, tags):
         one_hot = np.zeros(tags_cnt)
         one_hot[tag-1] = 1
         y.append(one_hot)
         X.append(doc_to_vec(process_english_document(text), documents_cnt()))
+        cnt += 1
+        # if cnt > 100:
+        #     break
     print("Data loading completed")
     return np.asarray(X), np.asarray(y)
 
 def classify_document(document):
-    X = [doc_to_vec(document, documents_cnt())]
-    y = clf.predict(X)[0]
+    X = doc_to_vec(document, documents_cnt()).reshape(1, -1)
+    y = clf.predict(X)
+    p = clf.predict_proba(X)
     print(y)
+    print(p)
+    res = 0
     for i in range(len(y)):
-        if y[i] > 0:
-            return i
-    return 0
+        if y[i][0][1] > y[res][0][1]:
+            res = i
+    return res
 
 def classify_documents():
     for id, document in enumerate(document_base):
