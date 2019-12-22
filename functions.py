@@ -26,7 +26,9 @@ def get_gamma_difference(*_args):
 
 def search_for_document(*args):
     query = [get_corrected_word(word) for word in args]
-    related_documents = get_related_documents(query, 10)
+    query_mnemonic = {'tf':'l', 'idf':'t', 'norm':'n'}
+    doc_mnemonic = {'tf':'l', 'idf':'n', 'norm':'c'}
+    related_documents = get_related_documents(query, 10, query_mnemonic, doc_mnemonic)
     print("Related Documents: ")
     for i, document in enumerate(related_documents):
         print(i, '.', document)
@@ -34,7 +36,9 @@ def search_for_document(*args):
 def proximity_search(*args):
     window = int(args[0])
     query = [get_corrected_word(word) for word in args[1:]]
-    related_documents = get_proximity_related_documents(query, window, 10)
+    query_mnemonic = {'tf': 'l', 'idf': 't', 'norm': 'n'}
+    doc_mnemonic = {'tf': 'l', 'idf': 'n', 'norm': 'c'}
+    related_documents = get_proximity_related_documents(query, window, 10, query_mnemonic, doc_mnemonic)
     print("Proximity Related Documents: ")
     for i, document in enumerate(related_documents):
         print(i, '.', document)
