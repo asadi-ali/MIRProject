@@ -20,8 +20,12 @@ class NaiveBayesClassifier(BaseClassifier):
 
     @staticmethod
     def get_one_hot(tag):
-        res = np.zeros(NUMBER_OF_LABELS)
-        res[tag] = 1
+        res = np.zeros((NUMBER_OF_LABELS, 2))
+        for i in range(NUMBER_OF_LABELS):
+            if i == tag:
+                res[tag][1] = 1
+            else:
+                res[tag][0] = 1
         return res
 
     def fit(self, X, y):
