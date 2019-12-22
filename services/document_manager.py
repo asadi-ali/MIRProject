@@ -9,6 +9,7 @@ import nltk
 import hazm
 from services.index import positional_indexer, bigram_indexer
 from collections import Counter
+import pandas as pd
 
 en_stop_words = set(stopwords.words('english'))
 en_tokenizer = RegexpTokenizer(r'\w+')
@@ -27,6 +28,9 @@ en_common = []
 fa_common = []
 en_tokens = []
 fa_tokens = []
+
+def documents_cnt():
+    return len(document_base)
 
 def get_stopwords(document):
     counter = Counter(document)
@@ -109,10 +113,20 @@ def import_farsi_documents(file_address):
 
 def import_documents():
     import_english_documents('data/English.csv')
-    import_farsi_documents('data/Persian.xml')
+    # import_farsi_documents('data/Persian.xml')
 
 def get_farsi_commons():
     return fa_common
 
 def get_english_commons():
     return en_common
+
+def load_texts_and_tags(path):
+    """
+    :param path: path to data  
+    :return: x, y as texts, tags arrays
+    """
+    data = pd.read_csv(path)
+    tags = data['Tag']
+    texts = data['Title'] + ' ' + data['Text']
+    return texts, tags
