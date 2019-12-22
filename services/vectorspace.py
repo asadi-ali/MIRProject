@@ -1,7 +1,6 @@
 from math import log
 import numpy as np
 from collections import defaultdict
-from .document_manager import documents_cnt
 from services.index import positional_indexer
 
 def tf_prime(tf, type):
@@ -14,27 +13,27 @@ def tf_prime(tf, type):
     else:
         raise NotImplementedError()
 
-def idf_prime(df, type):
+def idf_prime(df, N, type):
     if type == 'n':
         return 1
     elif type == 't':
-        return log(documents_cnt()/df)
+        return log(N/df)
     else:
         raise NotImplementedError()
 
-def get_idf(term, type):
+def get_idf(term, N, type):
     if not positional_indexer.inverted_index[term]:
         return 0
-    return idf_prime(len(positional_indexer.get_posting_list(term)), type)
+    return idf_prime(len(positional_indexer.get_posting_list(term)), N, type)
 
 def get_tf(term, doc, type):
     return tf_prime(doc.count(term), type)
 
-def doc_to_vec(document, mnemonic):
+def doc_to_vec(document, N, mnemonic={'tf':'n', 'idf':'t', 'norm':'n'}):
     dictionary = positional_indexer.get_all_words()
     vec = []
     for term in dictionary:
         tf = get_tf(term, document, mnemonic['tf'])
-        idf = get_idf(term, mnemonic['idf'])
+        idf = get_idf(term, N, mnemonic['idf'])
         vec.append(tf * idf)
-    return vec
+    return np.asarray(vec)

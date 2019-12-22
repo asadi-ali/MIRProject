@@ -1,7 +1,7 @@
 from services.index import positional_indexer
 from collections import Counter, defaultdict
 from math import log, sqrt
-from services.document_manager import document_base, raw_document_base
+from services.document_manager import document_base, raw_document_base, documents_cnt
 from functools import lru_cache
 from .vectorspace import get_idf, get_tf, tf_prime
 
@@ -10,14 +10,14 @@ def get_related_documents(query, k, query_mnemonic, doc_mnemonic, candidates = N
     score = defaultdict(int)
     for t in terms:
         tf_q = get_tf(t, query, query_mnemonic['tf'])
-        idf_q = get_idf(t, query_mnemonic['idf'])
+        idf_q = get_idf(t, documents_cnt(), query_mnemonic['idf'])
         w_q = tf_q*idf_q
         posting_list = positional_indexer.get_posting_list(t)
         for d, pos in posting_list:
             if candidates is not None and not d in candidates:
                 continue
             tf_d = tf_prime(len(pos), doc_mnemonic['tf'])
-            idf_d = get_idf(t, doc_mnemonic['idf'])
+            idf_d = get_idf(t, documents_cnt(), doc_mnemonic['idf'])
             w_d = tf_d*idf_d
             score[d] += w_q*w_d
     if doc_mnemonic['norm'] == 'c':
@@ -80,7 +80,7 @@ def vector_length(doc_id):
     res = 0
     for t in terms:
         tf_d = tf_prime(document.count(t), 'l')
-        idf_d = get_idf(t, 'n')
+        idf_d = get_idf(t, documents_cnt(), 'n')
         w_d = tf_d*idf_d
         res += w_d*w_d
     return sqrt(res)

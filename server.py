@@ -23,9 +23,8 @@ def serve():
         print("The program is terminated.")
 
 
-def learn():
+def learn(clf_type):
     X_train, y_train = load_labeled_data('data/phase2_train.csv')
-    clf = get_trained_classifier(X_train, y_train, 'random_forest')
     X_test, y_test = load_labeled_data('data/phase2_test.csv')
-    pred = clf.predict_proba(X_test)
-    print(y_test[0], pred[0])
+    train_classifier(X_train, y_train, clf_type)
+    # classify_documents()

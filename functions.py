@@ -3,7 +3,8 @@ import os
 from services.index import positional_indexer
 from services.spell_correction import get_corrected_word
 from services.search import get_related_documents, get_proximity_related_documents
-from services.document_manager import process_farsi_document, process_english_document, get_farsi_commons, get_english_commons
+from services.document_manager import process_farsi_document, process_english_document, get_farsi_commons, get_english_commons, doc_indices_by_type, document_type
+from services.classify import classify_document
 
 def show_posting_list(*args):
     posting_list = positional_indexer.get_posting_list(args[0])
@@ -32,6 +33,22 @@ def search_for_document(*args):
     print("Related Documents: ")
     for i, document in enumerate(related_documents):
         print(i, '.', document)
+
+def search_for_document_by_type(*args):
+    type = args[0]
+    args = args[1:]
+    query = [get_corrected_word(word) for word in args]
+    query_mnemonic = {'tf': 'l', 'idf': 't', 'norm': 'n'}
+    doc_mnemonic = {'tf': 'l', 'idf': 'n', 'norm': 'c'}
+    related_documents = get_related_documents(query, 10, query_mnemonic, doc_mnemonic, doc_indices_by_type[type])
+    print("Related Documents in %s: " % type)
+    for i, document in enumerate(related_documents):
+        print(i, '.', document)
+
+def classify_query(*args):
+    query = [get_corrected_word(word) for word in args]
+    print(document_type[classify_document(query)])
+
 
 def proximity_search(*args):
     window = int(args[0])
@@ -62,6 +79,8 @@ name_to_function_mapping = {
     'get-variable-difference': get_variable_difference,
     'get-gamma-difference': get_gamma_difference,
     'search-for-document': search_for_document,
+    'search-for-document-by-type': search_for_document_by_type,
+    'classify-query': classify_query,
     'proximity-search': proximity_search,
     'print-common-en': print_common_en,
     'print-common-fa': print_common_fa,

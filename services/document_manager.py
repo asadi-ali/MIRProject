@@ -10,6 +10,7 @@ import hazm
 from services.index import positional_indexer, bigram_indexer
 from collections import Counter
 import pandas as pd
+from collections import defaultdict
 
 en_stop_words = set(stopwords.words('english'))
 en_tokenizer = RegexpTokenizer(r'\w+')
@@ -28,6 +29,8 @@ en_common = []
 fa_common = []
 en_tokens = []
 fa_tokens = []
+doc_indices_by_type = defaultdict(list)
+document_type = ['World', 'Sports', 'Business', 'Sci/Tech']
 
 def documents_cnt():
     return len(document_base)
@@ -114,6 +117,7 @@ def import_farsi_documents(file_address):
 def import_documents():
     import_english_documents('data/English.csv')
     # import_farsi_documents('data/Persian.xml')
+
 
 def get_farsi_commons():
     return fa_common

@@ -2,24 +2,22 @@ import pandas as pd
 import numpy as np
 from .vectorspace import doc_to_vec
 from sklearn.ensemble import RandomForestClassifier
-from .document_manager import load_texts_and_tags, process_english_document
+from .document_manager import load_texts_and_tags, process_english_document,\
+    documents_cnt, document_base, doc_indices_by_type, document_type
 from sklearn.model_selection import train_test_split
 from scipy.sparse import csr_matrix
 
-def get_trained_classifier(X_train, y_train, classifier_type):
+clf = None
+
+def train_classifier(X_train, y_train, classifier_type):
+    global clf
     if classifier_type == 'random_forest':
         print("Training random forest on training data")
         clf = RandomForestClassifier(n_estimators=20)
         clf.fit(X_train, y_train)
         print("Training completed")
-        return clf
     else:
         raise NotImplementedError
-
-def one_hot(tag, tags_cnt):
-    res = np.zeros(tags_cnt)
-    res[tag] = 1
-    return res
 
 def load_labeled_data(path):
     print("Loading data from ", path)
@@ -32,10 +30,22 @@ def load_labeled_data(path):
     y = []
     tags_cnt = max(tags)
     for text, tag in zip(texts, tags):
-        y.append(one_hot(tag-1, tags_cnt))
-        X.append(doc_to_vec(process_english_document(text), {'tf':'n', 'idf':'t', 'norm':'n'}))
+        one_hot = np.zeros(tags_cnt)
+        one_hot[tag-1] = 1
+        y.append(one_hot)
+        X.append(doc_to_vec(process_english_document(text), documents_cnt()))
     print("Data loading completed")
     return np.asarray(X), np.asarray(y)
 
-def test_classifier():
-    pass
+def classify_document(document):
+    X = [doc_to_vec(document, documents_cnt())]
+    y = clf.predict(X)[0]
+    print(y)
+    for i in range(len(y)):
+        if y[i] > 0:
+            return i
+    return 0
+
+def classify_documents():
+    for id, document in enumerate(document_base):
+        doc_indices_by_type[document_type[classify_document(document)]].append(id+1)
