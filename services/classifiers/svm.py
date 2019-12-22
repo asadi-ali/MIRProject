@@ -24,16 +24,17 @@ class SVMClassifier(BaseClassifier):
         res = np.zeros((NUMBER_OF_LABELS, 2))
         for i in range(NUMBER_OF_LABELS):
             if i == tag:
-                res[tag][1] = 1
+                res[i][1] = 1
             else:
-                res[tag][0] = 1
+                res[i][0] = 1
         return res
 
     def fit(self, X, y):
         y = self.convert_one_hot_to_tag(y)
 
         best_score = -1000000000
-        for C in [0.01, 0.1, 0.5, 1, 5, 10, 50]:
+        for C in [0.5, 1, 1.5, 2]:
+            print("set C = ", C)
             X_train, X_val, y_train, y_val = sklearn.model_selection.train_test_split(X, y, test_size=0.1)
             svc = sklearn.svm.SVC(C=C, gamma='scale', decision_function_shape='ovo')
             svc.fit(X_train, y_train)
@@ -44,6 +45,9 @@ class SVMClassifier(BaseClassifier):
 
     def predict_proba(self, X):
         res = self.model.predict(X)
-        answer = np.zeros((len(X), NUMBER_OF_LABELS))
-        for i in range(len(X)):
-            answer[i] = self.get_one_hot(res[i])
+        answer = np.zeros((NUMBER_OF_LABELS, len(X), 2))
+        for j in range(len(X)):
+            one_hot = self.get_one_hot(res[j])
+            for i in range(NUMBER_OF_LABELS):
+                answer[i][j] = one_hot[i]
+        return answer

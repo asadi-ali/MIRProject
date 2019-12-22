@@ -23,9 +23,9 @@ class NaiveBayesClassifier(BaseClassifier):
         res = np.zeros((NUMBER_OF_LABELS, 2))
         for i in range(NUMBER_OF_LABELS):
             if i == tag:
-                res[tag][1] = 1
+                res[i][1] = 1
             else:
-                res[tag][0] = 1
+                res[i][0] = 1
         return res
 
     def fit(self, X, y):
@@ -48,13 +48,15 @@ class NaiveBayesClassifier(BaseClassifier):
 
     def predict_proba(self, X):
         number_of_docs = len(X)
-        answer = np.zeros((number_of_docs, NUMBER_OF_LABELS))
-        for i in range(number_of_docs):
+        answer = np.zeros((NUMBER_OF_LABELS, number_of_docs, 2))
+        for j in range(number_of_docs):
             prob = np.log(self.prior)
-            for j in range(NUMBER_OF_LABELS):
-                prob[j] += sum(np.log(self.likelihood[j] * X[i]))
+            for i in range(NUMBER_OF_LABELS):
+                prob[i] += sum(np.log(self.likelihood[i] * X[j]))
 
-            answer[i] = self.get_one_hot(np.argmax(prob))
+            one_hot = self.get_one_hot(np.argmax(prob))
+            for i in range(NUMBER_OF_LABELS):
+                answer[i][j] = one_hot[i]
 
         return answer
 

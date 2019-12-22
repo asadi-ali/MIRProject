@@ -25,9 +25,9 @@ class KNNClassifier(BaseClassifier):
         res = np.zeros((NUMBER_OF_LABELS, 2))
         for i in range(NUMBER_OF_LABELS):
             if i == tag:
-                res[tag][1] = 1
+                res[i][1] = 1
             else:
-                res[tag][0] = 1
+                res[i][0] = 1
         return res
 
     def calc_tag(self, data):
@@ -48,7 +48,8 @@ class KNNClassifier(BaseClassifier):
         best_k = None
         best_score = -1000000000
         self.X_train, X_val, self.y_train, y_val = sklearn.model_selection.train_test_split(X, y, test_size=0.1)
-        for k in range(1, 22, 2):
+        for k in [1, 5, 9]:
+            print("set k = ", k)
             self.K = k
             score = 0
             for i in range(len(X_val)):
@@ -63,7 +64,9 @@ class KNNClassifier(BaseClassifier):
         self.y_train = y
 
     def predict_proba(self, X):
-        answer = np.zeros((len(X), NUMBER_OF_LABELS))
-        for i in range(len(X)):
-            answer[i] = self.get_one_hot(self.calc_tag(X[i]))
+        answer = np.zeros((NUMBER_OF_LABELS, len(X), 2))
+        for j in range(len(X)):
+            one_hot = self.get_one_hot(self.calc_tag(X[j]))
+            for i in range(NUMBER_OF_LABELS):
+                answer[i][j] = one_hot[i]
         return answer

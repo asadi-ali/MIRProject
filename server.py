@@ -25,7 +25,7 @@ def serve():
 
 
 def learn(clf_type):
-    X_train, y_train = load_labeled_data('data/phase2_train.csv')
-    X_test, y_test = load_labeled_data('data/phase2_test.csv')
-    train_classifier(X_train, y_train, clf_type)
-    # classify_documents()
+    load_train_data('data/phase2_train.csv')
+    load_test_data('data/phase2_test.csv')
+    train_classifier(clf_type)
+    classify_documents()

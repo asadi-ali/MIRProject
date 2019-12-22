@@ -1,3 +1,5 @@
+from sklearn.metrics import classification_report
+
 class BaseClassifier(object):
 
     def __init__(self):
@@ -18,5 +20,8 @@ class BaseClassifier(object):
         :param X: array-like or sparse matrix of shape (n_samples, n_features) 
         :return: array-like of shape (n_samples,) or (n_samples, n_outputs)
         """
+        raise NotImplementedError()
+
+    def predict_proba(self, X):
         raise NotImplementedError()
 
