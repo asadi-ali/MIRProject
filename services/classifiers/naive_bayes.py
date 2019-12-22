@@ -33,7 +33,7 @@ class NaiveBayesClassifier(BaseClassifier):
         number_of_tokens = len(X[0])
 
         self.prior = np.zeros(NUMBER_OF_LABELS)
-        self.likelihood = np.zeros((NUMBER_OF_LABELS, number_of_tokens))
+        self.likelihood = np.ones((NUMBER_OF_LABELS, number_of_tokens))
 
         for i in range(number_of_docs):
             self.prior += y[i] / number_of_docs
