@@ -52,7 +52,7 @@ class NaiveBayesClassifier(BaseClassifier):
         for j in range(number_of_docs):
             prob = np.log(self.prior)
             for i in range(NUMBER_OF_LABELS):
-                prob[i] += sum(np.log(self.likelihood[i] * X[j]))
+                prob[i] += sum(np.log(self.likelihood[i]) * X[j])
 
             one_hot = self.get_one_hot(np.argmax(prob))
             for i in range(NUMBER_OF_LABELS):
