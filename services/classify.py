@@ -1,5 +1,5 @@
 import numpy as np
-from .vectorspace import doc_to_vec
+from .vectorspace import doc2tf_idf
 from sklearn.ensemble import RandomForestClassifier
 from .document_manager import load_texts_and_tags, process_english_document,\
     documents_cnt, document_base, document_type, doc_indices_by_type
@@ -62,7 +62,7 @@ def load_labeled_data(path):
         one_hot = np.zeros(tags_cnt)
         one_hot[tag-1] = 1
         y.append(one_hot)
-        X.append(doc_to_vec(process_english_document(text), documents_cnt()))
+        X.append(doc2tf_idf(process_english_document(text), documents_cnt()))
         cnt += 1
         # if cnt > 1000:
         #     break
@@ -77,7 +77,7 @@ def most_probable_label(prob):
     return label
 
 def classify_document(document):
-    X = doc_to_vec(document, documents_cnt()).reshape(1, -1)
+    X = doc2tf_idf(document, documents_cnt()).reshape(1, -1)
     p = clf.predict_proba(X)
     prob = [p[i][0][1] for i in range(len(p))]
     # print(prob)
