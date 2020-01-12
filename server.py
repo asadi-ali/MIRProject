@@ -1,8 +1,8 @@
 from services.document_manager import import_documents
 from services.index import positional_indexer, bigram_indexer
 from functions import name_to_function_mapping
-from services.classify import *
-
+import services.classify as clf
+import services.cluster as clt
 
 def initialize():
     #if not positional_indexer.load() or not bigram_indexer.load():
@@ -25,7 +25,14 @@ def serve():
 
 
 def learn(clf_type):
-    load_train_data('data/phase2_train.csv')
-    load_test_data('data/phase2_test.csv')
-    train_classifier(clf_type)
-    classify_documents()
+    clf.load_train_data('data/phase2_train.csv')
+    clf.load_test_data('data/phase2_test.csv')
+    clf.train_classifier(clf_type)
+    clf.classify_documents()
+
+def cluster(clt_type, rep_type):
+    clt.load_data('data/phase3.csv', rep_type, n_comps=50, scale=True)
+    clt.train_classifier(clt_type)
+    file_name = 'data/phase3_' + clt_type + '_' + rep_type + '.csv'
+    clt.cluster_data(file_name)
+    clt.visualize('data/' + clt_type)
