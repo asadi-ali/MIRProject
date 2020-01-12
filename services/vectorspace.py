@@ -1,7 +1,9 @@
 from math import log
 import numpy as np
-from collections import defaultdict
+from gensim.models import Word2Vec
+
 from services.index import positional_indexer
+import gensim
 
 def tf_prime(tf, type):
     if type == 'b':
@@ -29,7 +31,7 @@ def get_idf(term, N, type):
 def get_tf(term, doc, type):
     return tf_prime(doc.count(term), type)
 
-def doc_to_vec(document, N, mnemonic={'tf':'n', 'idf':'t', 'norm':'n'}):
+def doc2tf_idf(document, N, mnemonic={'tf': 'n', 'idf': 't', 'norm': 'n'}):
     dictionary = positional_indexer.get_all_words()
     vec = []
     for term in dictionary:
@@ -37,3 +39,17 @@ def doc_to_vec(document, N, mnemonic={'tf':'n', 'idf':'t', 'norm':'n'}):
         idf = get_idf(term, N, mnemonic['idf'])
         vec.append(tf * idf)
     return np.asarray(vec)
+
+word2vec = None
+vec_size = 100
+
+def train_doc2vec(corpus):
+    global word2vec
+    word2vec = Word2Vec(corpus, iter=10, min_count=1, size=vec_size)
+
+def doc2vec(document, dictionary):
+    if len(document) == 0:
+        return np.zeros(vec_size)
+    vectors = [word2vec.wv[word] for word in document if word in dictionary]
+    res = list(np.average(vectors, axis=0))
+    return res
