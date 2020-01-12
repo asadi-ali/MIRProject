@@ -134,3 +134,4 @@ def load_texts_and_tags(path):
     tags = data['Tag']
     texts = data['Title'] + ' ' + data['Text']
     return texts, tags
+
