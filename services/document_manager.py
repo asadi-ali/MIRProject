@@ -115,8 +115,10 @@ def import_farsi_documents(file_address):
 
 
 def import_documents():
+    print("Importing documents.")
     import_english_documents('data/English.csv')
     # import_farsi_documents('data/Persian.xml')
+    print("Documents imported.")
 
 
 def get_farsi_commons():

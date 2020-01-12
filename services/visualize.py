@@ -9,6 +9,7 @@ def flat(X):
 def visualize_clustering(X, y, path=None):
     X_2D = flat(X)
     plt.scatter(X_2D[:, 0], X_2D[:, 1], c=y, s=10, cmap='viridis')
-    plt.show()
     if path is not None:
+        print('Writing clustering visualization to %s.' % path)
         plt.savefig(path)
+    plt.show()
